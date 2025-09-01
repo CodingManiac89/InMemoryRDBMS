@@ -71,6 +71,21 @@ public class DDLOperations {
 		column.setColumnType(type);
 	}
 	
+	public boolean dropTable(String tableName) {
+		try {
+			validateDb(tableName);
+			Map<String, Table> tables = Database.getInstance().getTables();
+			tables.remove(tableName);
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	
 	private void validateDb(String tableName) throws Exception {
 		Map<String, Table> tables = Database.getInstance().getTables();
 		if(!tables.containsKey(tableName)) {

@@ -1,5 +1,5 @@
 package constants;
 
 public enum ColumnType {
-	NUMBER,VARCHAR,DATETIME,BOOLEAN
+	ID,NUMBER,VARCHAR,DATETIME,BOOLEAN,DECIMAL;
 }

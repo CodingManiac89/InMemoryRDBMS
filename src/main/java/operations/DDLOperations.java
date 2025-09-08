@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import constants.ColumnType;
 import db.Database;
+import exception.InMemoryDDLException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidationException;
 import table.Column;
@@ -28,14 +29,14 @@ public class DDLOperations {
 		tables.put(table.getName(), table);
 	}
 	
-	public Table getTable(String tableName) throws Exception {
+	public Table getTable(String tableName) throws InMemoryDDLException {
 		Map<String, Table> tables = Database.getInstance().getTables();
-		validateDb(tableName);
+		Utils.validateDb(tableName);
 		return tables.get(tableName);
 	}
 	
-	public void changeColumnName(String tableName, String oldColumnName, String newColumnName) throws Exception {
-		validateDb(tableName);
+	public void changeColumnName(String tableName, String oldColumnName, String newColumnName) throws InMemoryDDLException {
+		Utils.validateDb(tableName);
 		Map<String, Table> tables = Database.getInstance().getTables();
 		Table table = tables.get(tableName);
 		Map<String, Column> columns = table.getColumns();
@@ -51,8 +52,8 @@ public class DDLOperations {
 		columns.put(newColumnName, column);
 	}
 	
-	public void addNewColumn(String tableName, Column column) throws Exception {
-		validateDb(tableName);
+	public void addNewColumn(String tableName, Column column) throws InMemoryDDLException {
+		Utils.validateDb(tableName);
 		Map<String, Table> tables = Database.getInstance().getTables();
 		Table table = tables.get(tableName);
 		Map<String, Column> columns = table.getColumns();
@@ -62,8 +63,8 @@ public class DDLOperations {
 		columns.put(column.getColumnName(), column);
 	}
 	
-	public void changeColumnDataType(String tableName, String columnName, ColumnType type) throws Exception {
-		validateDb(tableName);
+	public void changeColumnDataType(String tableName, String columnName, ColumnType type) throws InMemoryDDLException {
+		Utils.validateDb(tableName);
 		Map<String, Table> tables = Database.getInstance().getTables();
 		Table table = tables.get(tableName);
 		Map<String, Column> columns = table.getColumns();
@@ -73,23 +74,15 @@ public class DDLOperations {
 	
 	public boolean dropTable(String tableName) {
 		try {
-			validateDb(tableName);
+			Utils.validateDb(tableName);
 			Map<String, Table> tables = Database.getInstance().getTables();
 			tables.remove(tableName);
 			return true;
-		} catch (Exception e) {
+		} catch (InMemoryDDLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 		
-	}
-	
-	
-	private void validateDb(String tableName) throws Exception {
-		Map<String, Table> tables = Database.getInstance().getTables();
-		if(!tables.containsKey(tableName)) {
-			throw new Exception("Table with name "+tableName+" not found in the database");
-		}
 	}
 }

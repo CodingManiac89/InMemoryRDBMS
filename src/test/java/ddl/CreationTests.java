@@ -1,16 +1,15 @@
-package creation;
+package ddl;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import constants.ColumnType;
-import db.Database;
+import exception.InMemoryDDLException;
 import jakarta.validation.ValidationException;
 import operations.DDLOperations;
 import table.Column;
 import table.Table;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.*;
@@ -25,8 +24,7 @@ public class CreationTests {
 	
 	@Test
 	public void testCreationFail1() {
-		Column[] arr = new Column[] {new Column(null,null)};
-		Map<String,Column> columns = Map.of();
+		List<Column> columns = List.of();
 		Table t = new Table("Employee", columns);
 		assertThrows(ValidationException.class, ()->{
 			db.createTable(t);
@@ -42,12 +40,12 @@ public class CreationTests {
 	}
 	
 	@Test
-	public void testCreateSuccess() throws Exception {
+	public void testCreateSuccess() throws InMemoryDDLException {
 		Column c1 = new Column("emp_no",ColumnType.NUMBER);
 		Column c2 = new Column("emp_name",ColumnType.VARCHAR);
 		Column c3 = new Column("date_of_joining", ColumnType.DATETIME);
-		Map<String, Column> columns = Map.of("emp_no",c1,"emp_name",c2,"date_of_joining",c3);
-		Table t = new Table("employee",columns);
+		List<Column> cols = List.of(c1,c2,c3);
+		Table t = new Table("employee",cols);
 		
 	}
 }

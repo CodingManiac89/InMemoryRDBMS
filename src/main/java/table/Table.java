@@ -1,8 +1,10 @@
 package table;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.bval.jsr.ApacheValidationProvider;
 
@@ -23,9 +25,12 @@ public class Table {
 	@Valid
 	private Map<String, Column> columns;
 	
-	public Table(String name, Map<String, Column> columns) {
+	private Map<Integer,Row> rows=new HashMap<>();
+	
+	public Table(String name, List<Column> columns) {
 		this.name = name;
-		this.columns = columns;
+		Map<String, Column> colMap = columns!=null ? columns.stream().collect(Collectors.toMap(Column::getColumnName, c->c)) : null;
+		this.columns = colMap;
 	}
 	public String getName() {
 		return name;
@@ -33,9 +38,7 @@ public class Table {
 	public Map<String, Column> getColumns() {
 		return columns;
 	}
-	public void setColumns(Map<String, Column> columns) {
-		this.columns = columns;
-	}
-	
-	
+	public Map<Integer,Row> getRows() {
+		return rows;
+	}	
 }

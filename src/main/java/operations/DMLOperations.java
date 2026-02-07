@@ -1,8 +1,10 @@
 package operations;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -45,9 +47,28 @@ public class DMLOperations {
 		}
 		row.setRowId(id);
 		rows.put(id, row);
+		if(table.getIndex()!=null) {
+			updateIndex(table,row);
+		}
 		return id;
 	}
-	
+
+	private void updateIndex(Table table, Row row) throws InMemoryDMLException {
+		Map<Object, Set<Integer>> index = table.getIndex();
+		int rowId = row.getRowId();
+		String indexColumn = table.getIndexColumn().getColumnName();
+		
+		Object val = row.getValues().get(indexColumn);
+		
+		if(val==null) {
+			throw new InMemoryDMLException("Unable to update index due to invalid column "+indexColumn);
+		}
+		
+		Set<Integer> rowIdSet = index.get(val) != null ? index.get(val) : new HashSet<>();
+		rowIdSet.add(rowId);
+		index.put(val, rowIdSet);
+	}
+
 	public List<Row> getAllRows(String tableName){
 		Utils.validate(tableName);
 		return Database.getInstance().getTables().get(tableName).getRows().values().stream().collect(Collectors.toList());

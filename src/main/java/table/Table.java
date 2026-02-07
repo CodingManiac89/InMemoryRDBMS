@@ -25,13 +25,27 @@ public class Table {
 	@Valid
 	private Map<String, Column> columns;
 	
+	private Map<Object,Set<Integer>> index;
+	
 	private Map<Integer,Row> rows=new HashMap<>();
+	
+	private Column indexColumn=null;
 	
 	public Table(String name, List<Column> columns) {
 		this.name = name;
 		Map<String, Column> colMap = columns!=null ? columns.stream().collect(Collectors.toMap(Column::getColumnName, c->c)) : null;
+		
 		this.columns = colMap;
 	}
+	
+	public Table(String name, List<Column> columns, Column indexColumn) {
+		this.name = name;
+		Map<String, Column> colMap = columns!=null ? columns.stream().collect(Collectors.toMap(Column::getColumnName, c->c)) : null;
+		this.columns = colMap;
+		this.indexColumn = indexColumn;
+		this.index = new HashMap<>();	
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -40,5 +54,14 @@ public class Table {
 	}
 	public Map<Integer,Row> getRows() {
 		return rows;
+	}
+	public Map<Object,Set<Integer>> getIndex() {
+		return index;
+	}
+
+	public Column getIndexColumn() {
+		return indexColumn;
 	}	
+	
+	
 }

@@ -29,7 +29,9 @@ public class Table {
 	
 	private Map<Integer,Row> rows=new HashMap<>();
 	
-	private Column indexColumn=null;
+	private String indexColumn=null;
+
+	
 	
 	public Table(String name, List<Column> columns) {
 		this.name = name;
@@ -38,7 +40,7 @@ public class Table {
 		this.columns = colMap;
 	}
 	
-	public Table(String name, List<Column> columns, Column indexColumn) {
+	public Table(String name, List<Column> columns, String indexColumn) {
 		this.name = name;
 		Map<String, Column> colMap = columns!=null ? columns.stream().collect(Collectors.toMap(Column::getColumnName, c->c)) : null;
 		this.columns = colMap;
@@ -59,7 +61,7 @@ public class Table {
 		return index;
 	}
 
-	public Column getIndexColumn() {
+	public String getIndexColumn() {
 		return indexColumn;
 	}	
 	

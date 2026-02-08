@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import db.Database;
+import table.Condition;
 import table.Row;
 import table.Table;
 import utils.Utils;
@@ -16,11 +17,13 @@ public class SelectOperations {
 		return table.getRows().get(pk);
 	}
 	
-	public List<Row> equals(String tableName, String columnName, Object value) throws Exception{
+	public List<Row> equals(String tableName, Condition condition) throws Exception{
 		List<Row> rows = new ArrayList<>();
 		Utils.validateDb(tableName);
 		Table table = Database.getInstance().getTables().get(tableName);
-		if(columnName.equals(table.getIndexColumn().getColumnName())) {
+		String columnName = condition.getColumnName();
+		Object value = condition.getValue();
+		if(columnName.equals(table.getIndexColumn())) {
 			Map<Object, Set<Integer>> index = table.getIndex();
 			Set<Integer> matchedIds = index.get(value);
 			if(matchedIds==null || matchedIds.isEmpty()) {

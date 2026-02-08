@@ -10,12 +10,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import constants.ColumnType;
+import constants.Operator;
 import exception.InMemoryDDLException;
 import exception.InMemoryDMLException;
 import operations.DDLOperations;
 import operations.DMLOperations;
 import operations.SelectOperations;
 import table.Column;
+import table.Condition;
 import table.Row;
 import table.Table;
 
@@ -30,7 +32,7 @@ public class SelectEqualsTests {
 		Column c2 = new Column("empname", ColumnType.VARCHAR);
 		Column c3 = new Column("salary", ColumnType.DECIMAL);
 		
-		Column indexColumn = new Column("empname", ColumnType.VARCHAR);
+		String indexColumn = "empname";
 		Table t = new Table("employee", List.of(c1,c2,c3), indexColumn);
 		db.createTable(t);
 		
@@ -57,7 +59,8 @@ public class SelectEqualsTests {
 	
 	@Test
 	public void selectEqualsSimple() throws Exception {
-		List<Row> rows = select.equals("employee", "empname", "siddu");
-		assertEquals(rows.size(), 2);
+		Condition condition = new Condition("empname", Operator.EQUALS, "siddu");
+		List<Row> rows = select.equals("employee", condition);
+		assertEquals(2, rows.size());
 	}
 }

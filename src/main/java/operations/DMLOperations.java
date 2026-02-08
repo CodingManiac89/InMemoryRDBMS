@@ -13,6 +13,7 @@ import db.Database;
 import exception.InMemoryDDLException;
 import exception.InMemoryDMLException;
 import table.Column;
+import table.Condition;
 import table.Row;
 import table.Table;
 import utils.Utils;
@@ -53,10 +54,15 @@ public class DMLOperations {
 		return id;
 	}
 
+
+	public int updateTable(String table, String columnToUpdate, String valueToUpdate, Condition condition){
+		return 0;
+	}
+
 	private void updateIndex(Table table, Row row) throws InMemoryDMLException {
 		Map<Object, Set<Integer>> index = table.getIndex();
 		int rowId = row.getRowId();
-		String indexColumn = table.getIndexColumn().getColumnName();
+		String indexColumn = table.getIndexColumn();
 		
 		Object val = row.getValues().get(indexColumn);
 		

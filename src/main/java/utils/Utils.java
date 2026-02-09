@@ -1,8 +1,10 @@
 package utils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.bval.jsr.ApacheValidationProvider;
 
@@ -13,6 +15,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import table.Column;
 import table.Table;
 
 public class Utils {
@@ -57,6 +60,14 @@ public class Utils {
 	      default:
 	    	  return false;
 		  
+		}
+	}
+
+
+	public static void validateIndexer(Set<String> columns, List<Column> tableColumns) throws InMemoryDDLException{
+		Set<String> tableColumnNames = tableColumns.stream().map(Column::getColumnName).collect(Collectors.toSet());
+		if(!columns.containsAll(tableColumnNames)){
+			throw new InMemoryDDLException("Unable to create index for the table due to mismatch in columns");
 		}
 	}
 }

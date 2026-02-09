@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import db.Database;
+import indexer.EqualsIndexer;
 import table.Condition;
 import table.Row;
 import table.Table;
@@ -23,17 +24,13 @@ public class SelectOperations {
 		Table table = Database.getInstance().getTables().get(tableName);
 		String columnName = condition.getColumnName();
 		Object value = condition.getValue();
-		if(columnName.equals(table.getIndexColumn())) {
-			Map<Object, Set<Integer>> index = table.getIndex();
-			Set<Integer> matchedIds = index.get(value);
-			if(matchedIds==null || matchedIds.isEmpty()) {
-				return rows;
-			}
-			
-			for(int id: matchedIds) {
+		EqualsIndexer indexer = table.getIndexer();
+		if(table.getIndexColumns().contains(columnName)){
+			Set<Integer> matchedRowIds = indexer.search(columnName, value);
+			for(int id:matchedRowIds){
 				rows.add(table.getRows().get(id));
 			}
-			
+
 			return rows;
 		}
 		throw new Exception("Non Indexed columns equals not supported yet");

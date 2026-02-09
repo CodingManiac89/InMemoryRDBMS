@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,8 @@ public class SelectEqualsTests {
 		Column c2 = new Column("empname", ColumnType.VARCHAR);
 		Column c3 = new Column("salary", ColumnType.DECIMAL);
 		
-		String indexColumn = "empname";
-		Table t = new Table("employee", List.of(c1,c2,c3), indexColumn);
+		Set<String> indexColumns = Set.of("empname");
+		Table t = new Table("employee", List.of(c1,c2,c3), indexColumns);
 		db.createTable(t);
 		
 		DMLOperations insert = new DMLOperations();

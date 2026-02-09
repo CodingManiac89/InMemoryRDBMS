@@ -23,11 +23,15 @@ public class EqualsIndexer{
         }
 
         public Set<Integer> getRowIds(Object value){
-            return this.index.get(value);
+            if(this.index.get(value)!=null)
+                return this.index.get(value);
+            else
+               return new HashSet<>();
         }
 
         public void removeIndexForValue(Object value){
-            this.index.remove(value);
+            if(this.index.get(value)!=null)
+                this.index.remove(value);
         }
 
         public void removeRowForValue(Object value, int rowId){
@@ -39,6 +43,14 @@ public class EqualsIndexer{
 
     private EqualsIndexer() {
         this.indexes = new HashMap<>();
+    }
+
+    public static EqualsIndexer createInstance(Set<String> columns){
+        EqualsIndexer indexer = new EqualsIndexer();
+        columns.forEach(column -> {
+            indexer.indexes.put(column, null);
+        });
+        return indexer;
     }
 
     public void updateIndex(String columnName, Object value, int rowId){

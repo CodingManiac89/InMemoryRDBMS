@@ -12,6 +12,7 @@ import constants.ColumnType;
 import db.Database;
 import exception.InMemoryDDLException;
 import exception.InMemoryDMLException;
+import indexer.EqualsIndexer;
 import table.Column;
 import table.Condition;
 import table.Row;
@@ -48,7 +49,7 @@ public class DMLOperations {
 		}
 		row.setRowId(id);
 		rows.put(id, row);
-		if(table.getIndex()!=null) {
+		if(table.getIndexColumns()!=null) {
 			updateIndex(table,row);
 		}
 		return id;
@@ -60,19 +61,13 @@ public class DMLOperations {
 	}
 
 	private void updateIndex(Table table, Row row) throws InMemoryDMLException {
-		Map<Object, Set<Integer>> index = table.getIndex();
+		EqualsIndexer indexer = table.getIndexer();
 		int rowId = row.getRowId();
-		String indexColumn = table.getIndexColumn();
-		
-		Object val = row.getValues().get(indexColumn);
-		
-		if(val==null) {
-			throw new InMemoryDMLException("Unable to update index due to invalid column "+indexColumn);
-		}
-		
-		Set<Integer> rowIdSet = index.get(val) != null ? index.get(val) : new HashSet<>();
-		rowIdSet.add(rowId);
-		index.put(val, rowIdSet);
+		Set<String> indexCols = table.getIndexColumns();
+		indexCols.forEach(col->{
+			Object val = row.getValues().get(col);
+			indexer.updateIndex(col, val, rowId);
+		});
 	}
 
 	public List<Row> getAllRows(String tableName){

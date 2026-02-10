@@ -48,6 +48,7 @@ public class Table {
 		Map<String, Column> colMap = columns!=null ? columns.stream().collect(Collectors.toMap(Column::getColumnName, c->c)) : null;
 		this.columns = colMap;
 		Utils.validateIndexer(indexColumns, columns);
+		this.indexColumns=indexColumns;
 		this.indexer = EqualsIndexer.createInstance(indexColumns);
 	}
 	

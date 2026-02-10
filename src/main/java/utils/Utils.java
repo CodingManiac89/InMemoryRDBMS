@@ -66,7 +66,7 @@ public class Utils {
 
 	public static void validateIndexer(Set<String> columns, List<Column> tableColumns) throws InMemoryDDLException{
 		Set<String> tableColumnNames = tableColumns.stream().map(Column::getColumnName).collect(Collectors.toSet());
-		if(!columns.containsAll(tableColumnNames)){
+		if(!tableColumnNames.containsAll(columns)){
 			throw new InMemoryDDLException("Unable to create index for the table due to mismatch in columns");
 		}
 	}

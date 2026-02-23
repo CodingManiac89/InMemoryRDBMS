@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import constants.ColumnType;
+import constants.LogicalOperator;
 import constants.Operator;
 import exception.InMemoryDDLException;
 import exception.InMemoryDMLException;
@@ -33,7 +35,7 @@ public class SelectEqualsTests {
 		Column c2 = new Column("empname", ColumnType.VARCHAR);
 		Column c3 = new Column("salary", ColumnType.DECIMAL);
 		
-		Set<String> indexColumns = Set.of("empname");
+		Set<String> indexColumns = Set.of("empname","salary");
 		Table t = new Table("employee", List.of(c1,c2,c3), indexColumns);
 		db.createTable(t);
 		
@@ -63,5 +65,31 @@ public class SelectEqualsTests {
 		Condition condition = new Condition("empname", Operator.EQUALS, "siddu");
 		List<Row> rows = select.equals("employee", condition);
 		assertEquals(2, rows.size());
+	}
+
+
+	@Test
+	public void selectEqualsCompoundAND() throws InMemoryDDLException{
+		Condition cond1 = new Condition("empname", Operator.EQUALS, "siddu");
+		Condition cond2 = new Condition("salary", Operator.EQUALS, 1232.23);
+		List<Row> rows = select.compoundConditionEquals("employee", cond1, cond2, LogicalOperator.AND);
+		assertEquals(1, rows.size());
+		assertEquals(rows.get(0).getRowId(), 1);	
+	}
+
+	@Test
+	public void selectEqualsCompoundOR() throws InMemoryDDLException{
+		Condition cond1 = new Condition("empname", Operator.EQUALS, "siddu");
+		Condition cond2 = new Condition("salary", Operator.EQUALS, 1232.23);
+		List<Row> rows = select.compoundConditionEquals("employee", cond1, cond2, LogicalOperator.OR);
+		assertEquals(2, rows.size());
+	}
+
+
+
+	@AfterEach
+	public void cleanUp(){
+		DDLOperations db = new DDLOperations();
+		db.dropTable("employee");
 	}
 }
